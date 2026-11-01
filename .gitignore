@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+._*
+
+# Python
+__pycache__/
+*.pyc
+
+# Local data / personal state
+.last_run.json
+.ui_settings.json
+preview_cache/
+BACKUPS/
+
+# Bundled binary (install yt-dlp yourself)
+bin/
+
+# Downloads & cookies
+*.mp4
+*.mkv
+*.webm
+cookies*.txt

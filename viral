@@ -1,0 +1,20 @@
+#!/bin/bash
+# viral — pick the most-watched moments out of a video.
+#
+#   viral "https://youtube.com/watch?v=XXXX"        timestamps only
+#   viral -c "https://youtube.com/watch?v=XXXX"     also cut the mp4s
+#   viral -c --batch urls.txt                       every URL in a file
+#   viral -c "/path/to/downloaded.mp4"              a local file
+#
+# Defaults live here; anything you pass on the command line overrides them.
+#   VIRAL_TOP         how many moments        (default 5)
+#   VIRAL_SKIP_INTRO  ignore first N seconds  (default 90 — YouTube intros
+#                     get inflated rewatch counts, so this drops clickbait)
+#   VIRAL_OUT         where clips land        (default ~/clips)
+
+TOP="${VIRAL_TOP:-5}"
+SKIP="${VIRAL_SKIP_INTRO:-90}"
+OUT="${VIRAL_OUT:-$HOME/clips}"
+
+exec python3 "$HOME/clipper-tools/find_viral.py" \
+    --top "$TOP" --skip-intro "$SKIP" --target 45 --outdir "$OUT" "$@"
