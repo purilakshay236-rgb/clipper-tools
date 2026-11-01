@@ -37,6 +37,8 @@ import subprocess
 import sys
 import tempfile
 
+from config import OUTPUT_DIR
+
 # ----------------------------------------------------------------------------
 # Binary resolution
 # ----------------------------------------------------------------------------
@@ -421,8 +423,8 @@ def build_parser():
                     help="skip videos that have no heatmap instead of "
                          "downloading their audio")
     ap.add_argument("--cut", action="store_true")
-    ap.add_argument("--outdir", "-o", default="/Volumes/SanDiskSSD/Viral Clips",
-                    help="where to write cut clips (SSD only — never internal storage)")
+    ap.add_argument("--outdir", "-o", default=OUTPUT_DIR,
+                    help="where to write cut clips")
     ap.add_argument("--csv", dest="csv_out", help="write a timestamps CSV here")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--json-out", dest="json_out",

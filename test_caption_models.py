@@ -19,9 +19,11 @@ import subprocess
 import time
 import urllib.request
 
-RULES = "/Volumes/SanDiskSSD/caption_rules.txt"
-TRANSCRIPTS = "/Volumes/SanDiskSSD/transcripts"
-CAPTIONS = "/Volumes/SanDiskSSD/captions"
+from config import RULES_FILE, DATA_DIR
+
+RULES = RULES_FILE
+TRANSCRIPTS = os.path.join(DATA_DIR, "transcripts")
+CAPTIONS = os.path.join(DATA_DIR, "captions")
 
 # Exactly the prompt the production watcher sends.
 PROMPT = """

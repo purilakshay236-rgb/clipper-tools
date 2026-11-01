@@ -40,10 +40,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 HERE = os.path.dirname(os.path.abspath(__file__))
 FINDER = os.path.join(HERE, "find_viral.py")
 SMART = os.path.join(HERE, "smart_clips.py")
-# Clips must NEVER land on the Mac's internal drive — the SSD only.
-# (Standing rule from the user: no folders on the Desktop or internal storage.)
-DEFAULT_OUT = "/Volumes/SanDiskSSD/Viral Clips"
-DEFAULT_BROWSE = "/Volumes/SanDiskSSD"
+# Output locations come from config.py — portable, override with env vars
+# (see the top of config.py). On the original machine the legacy SSD folders
+# are still picked up automatically when they exist.
+from config import OUTPUT_DIR, DOWNLOADS_DIR, BROWSE_ROOT, YTDLP_BIN, FFMPEG_BIN
+DEFAULT_OUT = OUTPUT_DIR
+DEFAULT_BROWSE = BROWSE_ROOT
 PORT = int(os.environ.get("VIRAL_UI_PORT", "8765"))
 SETTINGS = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".ui_settings.json")
 
@@ -119,11 +121,11 @@ def pick_folder():
 
 
 # --------------------------------------------------------------- downloads
-# A standalone yt-dlp kept on the SSD — NOT the copy inside a Hermes skill venv,
-# which can move or disappear. ffmpeg (homebrew) does the video+audio merge.
-YTDLP = "/Volumes/SanDiskSSD/clipper-tools/bin/yt-dlp"
-FFMPEG = "/opt/homebrew/bin/ffmpeg"
-DEFAULT_DL = "/Volumes/SanDiskSSD/Downloads"
+# yt-dlp: bundled copy if present, otherwise whatever is on PATH (homebrew).
+# ffmpeg (homebrew) does the video+audio merge.
+YTDLP = YTDLP_BIN
+FFMPEG = FFMPEG_BIN
+DEFAULT_DL = DOWNLOADS_DIR
 
 # "CapCut-safe" matters: plain "best" returns AV1 video + Opus audio, which
 # CapCut frequently refuses to import. avc1 + mp4a is the SAME resolution in a
@@ -491,7 +493,7 @@ def dl_dir():
 def pick_dl_folder():
     start = dl_dir()
     if not os.path.isdir(start):
-        start = "/Volumes/SanDiskSSD"
+        start = DEFAULT_BROWSE
     ok, out = osascript(
         'set f to choose folder with prompt "Where should downloaded videos go?" '
         f'default location (POSIX file "{start}")\n'
@@ -589,8 +591,8 @@ def smart_python():
 
 # --------------------------------------------------------------- sharing
 # A friend on your Tailscale network reaches this same server, so everything
-# still runs here: your yt-dlp, your ffmpeg, your login cookies, your SSD under
-# /Volumes/SanDiskSSD. The two output folders do NOT move and nobody picks a
+# still runs here: your yt-dlp, your ffmpeg, your login cookies, your local
+# folders. The two output folders do NOT move and nobody picks a
 # path for them — a visitor just pulls what is already there onto their own
 # device. Only flat files inside those two folders are reachable; there is no
 # way to walk the rest of the disk.
@@ -1036,7 +1038,7 @@ PAGE = r"""<!doctype html>
 
 <script>
 const $ = id => document.getElementById(id);
-let pickedFile = "", outFolder = "", DEFOUT = "/Volumes/SanDiskSSD/Viral Clips", busy = false, es = null, mode = "fast", dlDir = "", dlQ = "safe", RESULTS = [], lastSrc = "";
+let pickedFile = "", outFolder = "", DEFOUT = "__DEFAULT_OUT__", busy = false, es = null, mode = "fast", dlDir = "", dlQ = "safe", RESULTS = [], lastSrc = "";
 
 function esc(s){ return (s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function hms(t){
@@ -1365,6 +1367,9 @@ $("btnDownload").onclick = () => {
 </script>
 </body></html>
 """
+
+# Inject the portable default output folder into the page's JavaScript.
+PAGE = PAGE.replace('"__DEFAULT_OUT__"', json.dumps(DEFAULT_OUT))
 
 
 # ------------------------------------------------------------------ server

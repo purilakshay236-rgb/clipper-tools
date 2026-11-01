@@ -2,12 +2,12 @@
 # Viral Finder — ON.  Starts the local server in the background (no window)
 # and opens the page in the default browser. Safe to double-click twice.
 
-DIR="/Volumes/SanDiskSSD/clipper-tools"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PORT="8765"
 URL="http://127.0.0.1:$PORT"
 LOG="/tmp/viral_finder.log"
 
-cd "$DIR" || { osascript -e 'display alert "Viral Finder" message "The SanDiskSSD drive is not connected."'; exit 1; }
+cd "$DIR" || { osascript -e 'display alert "Viral Finder" message "Could not find the clipper-tools folder."'; exit 1; }
 
 # Already running? Just bring the page up.
 if curl -s -m 2 -o /dev/null "$URL/"; then

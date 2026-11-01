@@ -63,11 +63,12 @@ sys.path.insert(0, HERE)
 YTDLP = os.path.expanduser(
     "~/.hermes/skills/media/youtube-content/.venv/bin/yt-dlp")
 FINDER = os.path.join(HERE, "find_viral.py")
-FFMPEG = "/opt/homebrew/bin/ffmpeg"
-FFPROBE = "/opt/homebrew/bin/ffprobe"
-OLLAMA = "/usr/local/bin/ollama"
+from config import MODELS_DIR, FFMPEG_BIN, FFPROBE_BIN, OLLAMA_BIN, OUTPUT_DIR
+FFMPEG = FFMPEG_BIN
+FFPROBE = FFPROBE_BIN
+OLLAMA = OLLAMA_BIN
 DEFAULT_OLLAMA = "127.0.0.1:11434"
-HF_HOME = "/Volumes/SanDiskSSD/whisper_models"
+HF_HOME = MODELS_DIR
 
 # --------------------------------------------------------------- prompts
 
@@ -871,8 +872,8 @@ def main():
     ap.add_argument("--skip-intro", type=float, default=0.0,
                     help="ignore the first N seconds of replay data")
     ap.add_argument("--cut", action="store_true")
-    ap.add_argument("--outdir", "-o", default="/Volumes/SanDiskSSD/Viral Clips",
-                    help="where to write the cut clips (SSD only)")
+    ap.add_argument("--outdir", "-o", default=OUTPUT_DIR,
+                    help="where to write the cut clips")
     ap.add_argument("--json-out", dest="json_out")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--dump-raw", dest="dump_raw",

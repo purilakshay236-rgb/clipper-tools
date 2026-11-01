@@ -29,6 +29,6 @@ else
 fi
 
 # Close any leftover job runners from the app.
-pkill -f "$HOME/clipper-tools/find_viral.py" 2>/dev/null
+pkill -f "clipper-tools/find_viral.py" 2>/dev/null
 rm -f /tmp/viral_finder.log 2>/dev/null
 exit 0

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Probe how each qwen3 size behaves with / without the thinking switch."""
-import json, sys, time, urllib.request
+import json, os, sys, time, urllib.request
+
+from config import RULES_FILE, DATA_DIR
 
 HOST = "127.0.0.1:11434"
-RULES = open("/Volumes/SanDiskSSD/caption_rules.txt", encoding="utf-8").read()
-TR = open("/Volumes/SanDiskSSD/transcripts/11'09 bs 3 video.txt", encoding="utf-8").read()
+RULES = open(RULES_FILE, encoding="utf-8").read()
+TR = open(os.path.join(DATA_DIR, "transcripts", "11'09 bs 3 video.txt"), encoding="utf-8").read()
 PROMPT = f"""
 Generate ONE Instagram caption from the transcript below.
 

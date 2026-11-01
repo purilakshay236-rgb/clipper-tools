@@ -1,6 +1,6 @@
-import importlib.util, json, sys
+import importlib.util, json, os, sys
 spec = importlib.util.spec_from_file_location(
-    "sc", "/Volumes/SanDiskSSD/clipper-tools/smart_clips.py")
+    "sc", os.path.join(os.path.dirname(os.path.abspath(__file__)), "smart_clips.py"))
 sc = importlib.util.module_from_spec(spec); spec.loader.exec_module(sc)
 
 fails = []
@@ -8,7 +8,7 @@ def ck(name, cond, extra=""):
     print(("PASS " if cond else "FAIL ") + name + (("  " + str(extra)) if extra else ""))
     if not cond: fails.append(name)
 
-# Run with:  python3 /Volumes/SanDiskSSD/clipper-tools/test_smart_v2.py
+# Run with:  python3 test_smart_v2.py
 # Offline checks of the smart_clips.py v2 logic that decides how much of a
 # model's suggestion survives: score scaling, JSON recovery, quote anchoring
 # (exact / paraphrased / hint-rescue / unplaceable), window union and stitching.
